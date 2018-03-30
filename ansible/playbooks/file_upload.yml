@@ -1,0 +1,39 @@
+---
+- name: file distribute jumphost to instance
+  hosts: all
+  serial: "20%"
+  tasks:
+  - name: set ssh info
+    set_fact:
+      ansible_user: "{{gw_id}}"
+      ansible_ssh_port: "{{gw_port}}"
+      ansible_ssh_pass: "{{gw_passwd}}"
+
+  - name: make target directory
+    file:
+     path: "{{jumphost_path}}/{{deploy_project}}"
+     state: directory
+     mode: 0755
+
+  - name: file copy to jumphost
+    copy:
+     src: "{{source_path}}/{{source_file}}"
+     dest: "{{jumphost_path}}/{{deploy_project}}/{{source_file}}"
+
+  - name: make target directory in instance
+    file:
+     path: "{{target_path}}"  
+     state: directory
+     mode: 0755
+    delegate_to: "{{item}}"
+    with_inventory_hostnames: "{{deploy_target}}"
+    ignore_errors: True
+
+  - name: copy jumphost to instance
+    command: "sshpass -p {{scp_passwd}} scp -o StrictHostKeyChecking=no -P {{hostvars[item]['scp_port']}} {{jumphost_path}}/{{deploy_project}}/{{source_file}} {{scp_user}}@{{hostvars[item]['ansible_host']}}:{{target_path}}/{{target_file}}"
+    with_inventory_hostnames: "{{deploy_target}}"
+
+  - name: delete jumphost tmp file
+    file:
+     path: "{{jumphost_path}}/{{deploy_project}}/{{source_file}}"
+     state: absent

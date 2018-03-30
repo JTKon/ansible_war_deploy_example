@@ -1,0 +1,41 @@
+---
+- name: default deploy
+  hosts: all
+  serial: 1
+  tasks:
+  - name: make deploy directory
+    file:
+     path: "{{was_deploy_base}}"
+     state: directory
+     mode: 0755
+
+  - name: stop process
+    shell: "/home/kon/was/instances/DEFAULT/bin/shutdown.sh"
+    register: process_stop_cd
+    ignore_errors: True
+
+  - name: wait stop process
+    wait_for: port={{was_port}} state=stopped
+
+  - name: delete old data
+    shell: "chdir={{was_deploy_base}} rm -rf {{was_deploy_base}}/*"
+
+  - name: execution copy archive
+    command: "chdir={{was_deploy_base}} cp {{target_path}}/{{target_file}} ."
+
+  - name: execution extract archive
+    command: "chdir={{was_deploy_base}} jar xf {{target_file}}"
+
+  - name: start process
+    shell: "/home/kon/was/instances/DEFAULT/bin/startup.sh"
+    when: (process_stop_cd is defined and process_stop_cd.rc == 0)
+    async: 45
+    poll: 0
+
+  - name: wait start process
+    wait_for: port={{was_port}}
+    when: (process_stop_cd is defined and process_stop_cd.rc == 0)
+  
+  - name: loging deploy
+    shell: "chdir={{was_deploy_base}} date > deploy_date.log"
+    ignore_errors: True

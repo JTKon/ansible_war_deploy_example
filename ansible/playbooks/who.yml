@@ -1,0 +1,11 @@
+---
+- name: default deploy
+  hosts: all
+  serial: 1
+  tasks:
+  - name: test shell
+    shell: "ls /home/kon/this*"
+    register: result_text
+
+  - debug:
+      msg: "result is => {{result_text.stdout}}" 

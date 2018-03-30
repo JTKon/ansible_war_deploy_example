@@ -1,0 +1,6 @@
+---
+# dev gateway proxy setting
+ansible_connection: ssh
+ansible_ssh_port: "{{gw_port}}"
+ansible_user: "{{gw_id}}"
+ansible_ssh_pass: "{{gw_passwd}}"

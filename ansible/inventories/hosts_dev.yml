@@ -1,0 +1,13 @@
+[dev:children]
+dev_gw
+dev_instance
+
+[dev_gw]
+dev_gw_host ansible_host=192.168.0.17
+
+[dev_instance:children]
+dev_test
+
+[dev_test]
+dev_test_1 ansible_host=192.168.0.18
+dev_test_2 ansible_host=192.168.0.19

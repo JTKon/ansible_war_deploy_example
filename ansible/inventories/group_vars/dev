@@ -1,0 +1,30 @@
+---
+deploy_site: "dev"
+jumphost_path: "/home/kon/tmp/deploy"
+
+ansible_connecion: "ssh"
+ansible_ssh_port: "22"
+ansible_user: "kon"
+ansible_ssh_pass: "root"
+
+scp_port: "22"
+scp_user: "kon"
+scp_passwd : "root"
+
+gw_ip: "192.168.0.17"
+gw_port: "22"
+gw_id: "kon"
+gw_passwd: "root"
+
+source_path: "/home/kon/ansible/output/{{deploy_level}}/{{deploy_project}}"
+source_file: "{{deploy_project}}.war.{{deploy_version}}"
+target_path: "/home/kon/deploy_repo/{{deploy_project}}"
+target_file: "{{deploy_project}}.war.{{deploy_version}}"
+
+was_instance: "DEFAULT"
+was_deploy_base: "/home/kon/was/dplbase/{{was_instance}}/{{deploy_project}}"
+was_execute_path: "/home/kon/was/instances/{{was_instance}}/bin"
+was_port: "8080"
+was_ping_test: "http://127.0.0.1:{{was_port}}/{{deploy_project}}/ping.jsp"
+was_ping_result: "Im OK"
+
