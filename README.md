@@ -35,3 +35,6 @@ ansible_war_deploy_example은 ansible의 간략한 개요 설명과 함께 tomca
 * http://blog.devpage.net/?seq=22
 
 감사합니다.
+
+추신 : 블로그는 되도록 Chrome으로 봐주세요. 
+
